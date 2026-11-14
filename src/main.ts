@@ -88,6 +88,7 @@ declare global {
       readonly gameNumber: number;
       readonly overlay: string | null;
       snapshot: () => unknown;
+      selectGame: (gameNumber: number) => void;
     };
   }
 }
@@ -102,4 +103,5 @@ window.__spaceInvaders = {
     return app.overlay?.kind ?? null;
   },
   snapshot: () => app.game?.snapshot() ?? null,
+  selectGame: gameNumber => app.selectGame(gameNumber),
 };

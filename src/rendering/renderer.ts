@@ -61,7 +61,7 @@ export class Renderer {
       case 'selection':
         this.drawPlayfield(view.preview);
         this.drawSelectionHud(view.selection.gameNumber, view.preview.variation.playerCount);
-        this.panel(selectionLines(view.selection), 104);
+        this.panel(selectionLines(view.selection), 104, true);
         if (view.selection.notice) this.textCentered(view.selection.notice, 184, PALETTE.dim);
         return;
       case 'matrix':
@@ -113,17 +113,21 @@ export class Renderer {
     this.text(value, Math.round((FIELD.width - textWidth(value, scale)) / 2), y, color, scale);
   }
 
-  /** Panneau de messages sur fond noir, centré verticalement par défaut. */
-  private panel(lines: readonly Line[], top?: number): void {
+  /**
+   * Panneau de messages sur fond noir, centré verticalement par défaut.
+   * En pleine largeur, il masque tout le bas du terrain (écran de choix de partie).
+   */
+  private panel(lines: readonly Line[], top?: number, fullWidth = false): void {
     const height = lines.length * LINE_HEIGHT + 6;
     const y = top ?? Math.round((FIELD.height - height) / 2);
-    const width = Math.max(...lines.map(line => textWidth(line.text))) + 10;
+    const width = fullWidth ? FIELD.width : Math.max(...lines.map(line => textWidth(line.text))) + 10;
     const x = Math.round((FIELD.width - width) / 2);
+    if (fullWidth) this.rect(0, y, FIELD.width, FIELD.height - y, PALETTE.panel);
     this.rect(x, y, width, height, PALETTE.panel);
     this.rect(x, y, width, 1, PALETTE.panelBorder);
     this.rect(x, y + height - 1, width, 1, PALETTE.panelBorder);
     lines.forEach((line, i) => {
-      if (line.text) this.text(line.text, x + 5, y + 4 + i * LINE_HEIGHT, line.color);
+      if (line.text) this.text(line.text, fullWidth ? FIELD.minX + 2 : x + 5, y + 4 + i * LINE_HEIGHT, line.color);
     });
   }
 

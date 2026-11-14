@@ -123,6 +123,11 @@ export class App {
     if (delta !== 0) this.setGame(wrapGame(this.gameNumber, delta));
   }
 
+  /** Choix direct d'un numéro de partie depuis l'écran de sélection. */
+  selectGame(gameNumber: number): void {
+    if (this.mode === 'selection' || this.mode === 'matrix') this.setGame(wrapGame(1, gameNumber - 1));
+  }
+
   private setGame(gameNumber: number): void {
     this.gameNumber = gameNumber;
     this.preview = new Game(gameNumber, { difficulties: this.difficulties });
